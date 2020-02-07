@@ -54,6 +54,38 @@ const invert = (soundType) => {
     case 'rideCymbals':
       return rideCymbals = rideCymbals.map(value => !value);
     default:
-      return;
+      return [];
+  }
+}
+
+const getNeighborPads = (x, y, size) => {
+  let minIndex = 0;
+  let maxIndex = size -1;
+  if(minIndex > x || minIndex > y || x > maxIndex || y > maxIndex ){
+    return [];
+  }
+
+  if(x === maxIndex){ // right side
+    if(y === maxIndex){
+      return [[x-1, y],[x, y-1]]; //
+    } else if (y === minIndex){
+      return [[x-1, y], [x, y+1]]; //
+    } else {
+      return [[x-1, y], [x, y+1],[x, y-1]]; //
+    }
+  } else if (x === minIndex){ // left side
+    if(y === maxIndex){
+      return [[x+1, y],[x, y-1]];
+    } else if (y === minIndex){
+      return [[x+1, y], [x, y+1]];
+    } else {
+      return [[x+1, y], [x, y+1],[x, y-1]];
+    }
+  } else if(y === maxIndex){ // top and bottom
+      return [[x-1, y],[x+1, y], [x, y-1]]
+  } else if(y === minIndex){
+      return [[x-1, y],[x+1, y], [x, y+1]]
+  } else {
+      return [[x+1, y],[x-1, y],[x, y+1],[x, y-1]];
   }
 }
