@@ -1,4 +1,6 @@
 // Returns a random DNA base
+const survivingpAequor = [];
+
 const returnRandBase = () => {
   const dnaBases = ['A', 'T', 'C', 'G'];
   return dnaBases[Math.floor(Math.random() * 4)];
@@ -13,7 +15,7 @@ const mockUpStrand = () => {
   return newStrand;
 };
 
-const randomMutate = (currentRandBase) => { // index: 0-4, curr: A/T/C/G
+const randomMutate = (currentRandBase) => {
   let newRandBase = returnRandBase();
   while (newRandBase === currentRandBase) {
     newRandBase = returnRandBase();
@@ -21,7 +23,10 @@ const randomMutate = (currentRandBase) => { // index: 0-4, curr: A/T/C/G
   return newRandBase;
 }
 
-const testStrand = [ 'A', 'C', 'G', 'C', 'T', 'G', 'G', 'G', 'A', 'G', 'T', 'T', 'C', 'T', 'G' ];
+const testStrand = {
+  dna: [ 'A', 'C', 'G', 'C', 'T', 'G', 'G', 'G', 'A', 'G', 'T', 'T', 'C', 'T', 'G' ],
+  specimenNum: 99
+}
 
 const pAequorFactory = (specimenNum, dna) => {
   return {
@@ -35,29 +40,42 @@ const pAequorFactory = (specimenNum, dna) => {
           compareDNA(otherMutation) {
             let similarities = 0;
             const beforeMutation = this.dna;
-            beforeMutation.forEach((base) => {
-              if (base[i] === otherMutation[i]) {
+            for(i = 0; i <= this.dna.length; i++){
+              if (beforeMutation[i] === otherMutation[i]) {
                 similarities += 1;
               }
-            });
-            let diff = similarities / 15 * 100;
+            };
+            let diff = similarities / this.dna.length * 100;
 
             console.log(`The DNA samples are ${diff.toFixed(2)}% similar`);
-            console.log(`pAequor${this.specimenNum} is ${this.dna}`);
-            console.log(`pAequor${otherMutation.specimenNum} is ${otherMutation.dna}`);
+            console.log(`pAequor ${this.specimenNum} is ${this.dna}`);
+            console.log(`pAequor ${otherMutation.specimenNum} is ${otherMutation.dna}`);
           },
           willLikelySurvive() {
             const filtered = this.dna.filter(x => x === 'C' || x === 'G');
             if(filtered.length >= 9) {
-              console.log(true);
               return true;
             } else {
-              console.log(false);
               return false;
             }
           }
   }
 }
 
-pAequorFactory(1, mockUpStrand()).willLikelySurvive();
+let id = 1;
+let sample;
+
+do {
+  sample = pAequorFactory(id, mockUpStrand());
+  if (pAequorFactory(id, mockUpStrand()).willLikelySurvive){
+    survivingpAequor.push(sample);
+  }
+  id++;
+}
+while(survivingpAequor.length < 30);
+
+console.log(survivingpAequor);
+
+// pAequorFactory(1, mockUpStrand()).willLikelySurvive();
+// pAequorFactory(1, mockUpStrand()).compareDNA(testStrand);
 
